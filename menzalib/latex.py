@@ -46,13 +46,13 @@ def notazione_scientifica_latex(n,nrif=None,nult=None):
     if er==0: return "$"+str(n)+"$"
     return "$"+stringhizza(n)+"\\times 10^{"+str(er)+"}$" #ritorna la stringa in latex
 #vettorizzo
-ns_tex=vectorize(notazione_scientifica_latex)
+ns=vectorize(notazione_scientifica_latex)
 
 
 #ritorna due stringe, una col valore e l'altro con l'errore fatte in modo che abbiano
 #lo stesso ordine di grandezza
 #Author:Francesco Sacco
-def nes_tex(x,dx=None):
+def nes(x,dx=None):
 	if dx==None: return ns_tex(x)
 	return ns_tex(x,nult=dx), ns_tex(dx,x)
 
@@ -62,9 +62,9 @@ def nes_tex(x,dx=None):
 #questa funzione potrebbe avere errori se una delle due variabili è uguale a zero
 #Author: Francesco Sacco
 def numero_con_errore_latex(x,dx):
-	if dx==0.0 and x==0.0: return "$0\\pm 0"
-	if x==0.0: return "$0\\pm "+notazione_scientifica_latex(dx,dx)[1:]
-	if dx==0.0: return notazione_scientifica_latex(x,x)[:-1]+"\\pm 0$"
+	if dx==0.0 and x==0.0: return "$0 \\pm 0"
+	if x==0.0: return "$0 \\pm "+notazione_scientifica_latex(dx,dx)[1:]
+	if dx==0.0: return notazione_scientifica_latex(x,x)[:-1]+" \\pm 0$"
 	exp=int(floor(log10(absolute(x))))#guardo l'ordine di grandezza di x
 	if absolute(exp)==1: exp=0 #nel caso l'esponente è uno o meno uno non uso la n.s.
 	x=x/10**exp     #porto la virgola dopo la prima cifra
@@ -75,10 +75,10 @@ def numero_con_errore_latex(x,dx):
 	dx=round(dx,absolute(cifr)) #taglio le cifre significative di dx dopo la prima
 	#ritorno la stringa in latex
 	if exp==0:
-		return  "$"+str(x)+"$ $\\pm$ $"+stringhizza(dx)+"$" 
-	return  "$("+str(x)+"$ $\\pm$ $"+stringhizza(dx)+")\\times 10^{"+str(exp)+"}$"
+		return  "$"+str(x)+"$ $ \\pm $ $"+stringhizza(dx)+"$" 
+	return  "$("+str(x)+"$ $ \\pm $ $"+stringhizza(dx)+")\\times 10^{"+str(exp)+"}$"
 #vettorizzo la funzione
-ne_tex=vectorize(numero_con_errore_latex)
+ne=vectorize(numero_con_errore_latex)
 
 
 #Funzione che stampa una matrice fatta di stringhe in un formato comodo per latex
@@ -86,7 +86,7 @@ ne_tex=vectorize(numero_con_errore_latex)
 #l'argomento "file" deve contenere il percorso al file sul quale stampare la matrice
 #ATTENZIONE! il file in cui la funzione stampa la matrice viene completamente sovrascritto
 #Author: Francesco Sacco
-def mat_tex(Matrice,titolo=None,file=None):
+def mat(Matrice,titolo=None,file=None):
 	tipo_tabella='{'+(len(Matrice)*'c')+'}'
 	Matrice=transpose(Matrice)
 	if file==None:
@@ -105,9 +105,4 @@ def mat_tex(Matrice,titolo=None,file=None):
 		print(stringa[:-2]+'\\\\',file=f)
 	print('\\hline\n\\end{tabular}',file=f)
 	if file==None: print('--------------------------\n\n')
-   
-
-
-
-
    

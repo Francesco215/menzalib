@@ -1,0 +1,20 @@
+Metadata-Version: 2.1
+Name: texpy
+Version: 0.8.1
+Summary: Funzioni utili per lab3
+Home-page: https://github.com/Francesco215/menzalib
+Author: ['Lorenzo Cavuoti', 'Francesco Sacco']
+Author-email: francesco215@live.it
+License: UNKNOWN
+Description: # TexPy
+        
+        ### Descrizione rapida della libreria
+        Questa libreria e' stata creata da studenti del corso di Laboratorio 3 dell'universita' di Pisa per velocizzare la stesura delle relazioni, contiene funzioni che potrebbero risultare utili pure a corsi come Laboratorio 1 e 2  
+        
+        ### Installazione
+        scrivere su terminale `pip install texpy`
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown

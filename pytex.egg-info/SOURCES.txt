@@ -1,0 +1,9 @@
+README.md
+setup.py
+menzalib/__init__.py
+menzalib/latex.py
+pytex.egg-info/PKG-INFO
+pytex.egg-info/SOURCES.txt
+pytex.egg-info/dependency_links.txt
+pytex.egg-info/requires.txt
+pytex.egg-info/top_level.txt
