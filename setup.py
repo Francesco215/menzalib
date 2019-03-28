@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="latin1") as fh:
 
 setuptools.setup(
     name="texpy",
-    version="0.8.3",
+    version="0.8.4",
     author=["Lorenzo Cavuoti", "Francesco Sacco"],
     author_email="francesco215@live.it",
     description="Funzioni utili per lab3",

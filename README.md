@@ -22,7 +22,7 @@ Copia tutto quello che c'e' tra le linee
 \hline
 	Dati & presi\\ 
 \hline
-	$0 \pm 0 & $0 \pm 0 \\
+	$0 \pm 0 & $0 \pm 0$ \\
 	$0.222$ $ \pm $ $0.002$ & $1.11$ $ \pm $ $0.01$ \\
 	$0.444$ $ \pm $ $0.004$ & $2.22$ $ \pm $ $0.02$ \\
 	$0.667$ $ \pm $ $0.007$ & $3.33$ $ \pm $ $0.03$ \\

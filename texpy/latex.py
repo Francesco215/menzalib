@@ -62,7 +62,7 @@ def nes(x,dx=None):
 #questa funzione potrebbe avere errori se una delle due variabili è uguale a zero
 #Author: Francesco Sacco
 def numero_con_errore_latex(x,dx):
-	if dx==0.0 and x==0.0: return "$0 \\pm 0"
+	if dx==0.0 and x==0.0: return "$0 \\pm 0$"
 	if x==0.0: return "$0 \\pm "+notazione_scientifica_latex(dx,dx)[1:]
 	if dx==0.0: return notazione_scientifica_latex(x,x)[:-1]+" \\pm 0$"
 	exp=int(floor(log10(absolute(x))))#guardo l'ordine di grandezza di x
