@@ -1,4 +1,5 @@
-from numpy import floor,log10,absolute,round,vectorize,transpose
+import numpy as np
+from numpy import floor,log10,absolute,vectorize,transpose
 from sys import stdout
 
 """
@@ -28,11 +29,11 @@ def notazione_scientifica_latex(n,nrif=None,nult=None):
     if n==0: return "$0$"
     if nrif==None:nrif=n
     if nult==None:
-        if nrif==n: nult=n/100 #ns_tex(456,456)=4.56 x 10^2
-        if nrif>n: nult=n    #ns_tex(6,572)=0.06 x 10^2
-        if nrif<n: nult=nrif #ns_tex(572,6)=572
-    if nult<nrif:
-        print('non puoi usare un numero per l\'ultima cifra minore di quello di riferimento')
+        if nrif==n: nult=n/100 #ns(456,456)=4.56 x 10^2
+        if nrif>n: nult=n    #ns(6,572)=0.06 x 10^2
+        if nrif<n: nult=nrif #ns(572,6)=572
+    if nult>nrif:
+        print('non puoi usare un numero per l\'ultima cifra maggiore di quello di riferimento')
         return notazione_scientifica_latex(n)
     if nrif==0 or nult==0: 
         print('non puoi usare come numero di riferimento o numero dell\'ultima cifra lo zero')
@@ -41,7 +42,7 @@ def notazione_scientifica_latex(n,nrif=None,nult=None):
     #if absolute(er)==1: er=0 #nel caso l'esponente è uno o meno uno non uso la n.s.
     n,nult=n/10**er,nult/10**er #porto n nell'ordine di grandezza di nrif
     eu=int(floor(log10(absolute(nult))))#guardo l'ordine di grandezza di nult
-    if eu!=0: n=round(n,-eu)#arrotondo alla seconda cifra dopo la virgola
+    if eu!=0: n=np.round(n,-eu)#arrotondo alla seconda cifra dopo la virgola
     else: n=int(n)
     if er==0: return "$"+str(n)+"$"
     return "$"+stringhizza(n)+"\\times 10^{"+str(er)+"}$" #ritorna la stringa in latex
@@ -53,8 +54,8 @@ ns=vectorize(notazione_scientifica_latex)
 #lo stesso ordine di grandezza
 #Author:Francesco Sacco
 def nes(x,dx=None):
-	if dx==None: return ns_tex(x)
-	return ns_tex(x,nult=dx), ns_tex(dx,x)
+	if dx==None: return ns(x)
+	return ns(x,nult=dx), ns(dx,x)
 
 
 #funzione della notazione scientifica di un valore x con errore
@@ -71,8 +72,8 @@ def numero_con_errore_latex(x,dx):
 	dx=dx/10**exp   #porto la virgola dove si trova quella della x
 	cifr=int(floor(log10(absolute(dx))))  #guardo l'ordine di grandezza di dx
 	#taglio le di x con un ordine di grandezza inferiore a dx
-	x=round(x,absolute(cifr))       
-	dx=round(dx,absolute(cifr)) #taglio le cifre significative di dx dopo la prima
+	x=np.round(x,absolute(cifr))       
+	dx=np.round(dx,absolute(cifr)) #taglio le cifre significative di dx dopo la prima
 	#ritorno la stringa in latex
 	if exp==0:
 		return  "$"+str(x)+"$ $ \\pm $ $"+stringhizza(dx)+"$" 
@@ -87,6 +88,7 @@ ne=vectorize(numero_con_errore_latex)
 #ATTENZIONE! il file in cui la funzione stampa la matrice viene completamente sovrascritto
 #Author: Francesco Sacco
 def mat(Matrice,titolo=None,file=None):
+	Matrice = np.array(Matrice, dtype=np.unicode, ndmin=2)
 	tipo_tabella='{'+(len(Matrice)*'c')+'}'
 	Matrice=transpose(Matrice)
 	if file==None:
@@ -97,12 +99,12 @@ def mat(Matrice,titolo=None,file=None):
 	print('\\begin{tabular}'+tipo_tabella+'\n\\hline',file=f)
 	if titolo is None:
 		print('\t% qua ci va il titolo della tabella (ricorda di mettere \\\\ alla fine) %\n \\hline',file=f)
-	else: print('\t'+titolo+'\\\\ \n\\hline',file=f)
+	else: print('\t'+titolo+'\\\\ \n\t\\hline',file=f)
 	for colonna in Matrice:
 		stringa='\t'
 		for numero in colonna:
 			stringa=stringa+numero+' & '
 		print(stringa[:-2]+'\\\\',file=f)
-	print('\\hline\n\\end{tabular}',file=f)
+	print('\t\\hline\n\\end{tabular}',file=f)
 	if file==None: print('--------------------------\n\n')
    
