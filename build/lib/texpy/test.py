@@ -1,0 +1,66 @@
+# File di testing per le funzioni di texpy
+
+import texpy as tp
+import numpy as np
+import unittest
+
+
+class TestSum(unittest.TestCase):
+# Non testo con matrici o vettori le funzioni vettorizzate in quanto si suppone
+# che numpy faccia il suo lavoro bene
+    def test_notazione_scientifica(self):
+        print("\tTEST FUNZIONE NOTAZIONE SCIENTIFICA")
+        self.assertEqual(tp.ns(123), "$1.23 \\times 10^{2}$")
+        self.assertEqual(tp.ns(12.3), "$1.23 \\times 10^{1}$")
+        self.assertEqual(tp.ns(382387e-13), "$3.82 \\times 10^{-8}$")
+        self.assertEqual(tp.ns(382387e-13, 1e-13), "$382387 \\times 10^{-13}$")
+        self.assertEqual(tp.ns(382387e-13, 1e4), "$0.000000000004 \\times 10^{4}$")
+        self.assertEqual(tp.ns(123, 1, 1), "$123$")
+        self.assertEqual(tp.ns(123, 10, 1), "$12.3 \\times 10^{1}$")
+        self.assertEqual(tp.ns(382387e-13, nult=1e-9), "$3.8 \\times 10^{-8}$")
+        self.assertEqual(tp.ns(382387e14, nult=1e24), "$4 \\times 10^{19}$")
+        self.assertEqual(tp.ns(382387e14, nult=1e4), "$3.823870000000000 \\times 10^{19}$")
+        
+        self.assertEqual(tp.ns(382387e14, 1e20), "$0.4 \\times 10^{20}$")
+        print("\tTEST PASSATI")
+
+    def test_numero_errore(self):
+        print("\tTEST FUNZIONE NUMERO ERRORE")
+        self.assertEqual(tp.ne(1, 0.2), "$1.0 \\pm 0.2$")
+        self.assertEqual(tp.ne(1, 20), "$<2 \\times 10^{1}$")
+        self.assertEqual(tp.ne(1.987987, 0.2), "$2.0 \\pm 0.2$")
+        self.assertEqual(tp.ne(123, 2, unit="F"), "$(123 \\pm 2)$F")
+        self.assertEqual(tp.ne(123e-1, 2, "F"), "$(12 \\pm 2)$F")
+        self.assertEqual(tp.ne(123e-2, 2, "F"), "$<2$F")
+        self.assertEqual(tp.ne(123e-2, 2e-5, "F"), "$(1.23000 \\pm 0.00002)$F")
+        self.assertEqual(tp.ne(123e-3, 2e-5, "F"), "$(123.00 \\pm 0.02)$mF")
+        print("\tTEST PASSATI")
+    
+    def  test_nes(self):
+        print("\tTEST FUNZIONE nes")
+        args = [12e-9, 65, 98e9, 64543]
+        output = ["$1.20 \\times 10^{-8}$", "$6.50 \\times 10^{1}$", "$9.80 \\times 10^{10}$", "$6.45 \\times 10^{4}$"]
+        for i in range(len(args)):
+            self.assertEqual(tp.nes(args[i]), output[i])
+        
+        args = [[12.675765e-9, 1e-6], [65.82736, 10], [98.827368e9, 1e1]]
+        output = [[0, '$1 \\times 10^{-6}$'],
+            ["$7 \\times 10^{1}$", "$1 \\times 10^{1}$"], 
+            ["$9.882736800 \\times 10^{10}$", "$0.000000001 \\times 10^{10}$"]]
+        for i in range(len(args)):
+            self.assertEqual(tp.nes(*args[i]), output[i])
+        
+        args = [[12.675765e-9, 1e-6, "F"], [65.82736, None, "F"], [98.827368e9, 1e1, "F"]]
+        output = [[0, '$1$\\mu F'], ["$66$F"], ['$98.82736800$GF', '$0.00000001$GF']]
+        for i in range(len(args)):
+            self.assertEqual(tp.nes(*args[i]), output[i])
+        print("\tTEST PASSATI")
+    
+    # Per la funzione matrice latex non ho scritto un codice di testing
+    # perchè restituisce un output molto lungo
+            
+        
+
+        
+if __name__ == '__main__':
+    unittest.main()
