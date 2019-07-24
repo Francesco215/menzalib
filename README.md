@@ -1,11 +1,14 @@
 # TexPy
 
-### Descrizione rapida della libreria
+## Descrizione rapida della libreria  
+
 Questa libreria e' stata creata da studenti del corso di Laboratorio 3 dell'universita' di Pisa per velocizzare la stesura delle relazioni, contiene funzioni che potrebbero risultare utili pure a corsi come Laboratorio 1 e 2  
-In particolare permettono di stampare una tabella in LaTeX senza dover riscrivere tutti i dati tra $ ed &
+In particolare queste funzioni permettono di stampare una tabella in LaTeX senza dover riscrivere tutti i dati tra $ ed &
 
 Ad esempio creiamo una tabella con misure ed errori:
+
 ```python
+
 import texpy as tp
 import numpy as np
 x = np.linspace(1, 2, 10) # Genero dei dati
@@ -13,15 +16,21 @@ y = 5*x
 dx, dy = x*0.01, y*0.01 # Suppongo che l'errore sia l'1% della misura
 misure = [x, y] # Creo la matrice con i valori
 errori_misure = [dx, dy] # Creo la matrice con gli errori
-A = tp.ne(misure, errori_misure) # Crea una matrice del tipo misura +- errore come spiegato sotto
-tp.mat(tab)
+tab = tp.ne(misure, errori_misure) # Crea una matrice del tipo misura +- errore come spiegato sotto
+tp.mat(tab) # Stampa la matrice, ovvero la tabella in latex
 ```
+
 Output:
+
 ```latex
-Copia tutto quello che c'è tra le linee
+
+Copia tutto quello che c'e' tra le linee
+
 --------------------------
 \begin{tabular}{cc}
-\hline
+	\hline
+	% Qua mettici il titolo, ricordati di mettere le \\ alla fine % 
+	\hline
 	$1.00 \pm 0.01$ & $5.00 \pm 0.05$ \\
 	$1.11 \pm 0.01$ & $5.56 \pm 0.06$ \\
 	$1.22 \pm 0.01$ & $6.11 \pm 0.06$ \\
@@ -34,62 +43,59 @@ Copia tutto quello che c'è tra le linee
 	$2.00 \pm 0.02$ & $(1.00 \pm 0.01) \times 10^{1}$ \\
 	\hline
 \end{tabular}
+
 --------------------------
 ```
 
 ### Installazione
-Scrivere su terminale `pip install texpy`
 
-## Descrizione dettagliata delle funzioni  
+Scrivere su terminale `pip install texpy`  
+
+## Descrizione dettagliata delle funzioni
+
 Tutte le funzioni sono vettorizzate, ovvero possono prendere in input numeri, vettori, matrici, tensori ecc... e li trattano secondo le regole di numpy, per maggiori informazioni: [numpy broadcasting](https://www.numpy.org/devdocs/user/theory.broadcasting.html)  
 In pratica puoi dare anche array alle funzioni e queste fanno quello che ci aspetta
 
 ### Notazione scientifica con errore
-`ne(x,dx)` Ritorna una stringa latex con il valore x e l'errore
+
+`ne(x, dx, unit=None)` Ritorna una stringa in latex con il valore x e l'errore ovvero "x \pm dx"
 Parametri:
+
 - x: valore della misura
-- dx: errore
+- dx: errore della misura
+- unit: Opzionale, serve per impostare l'unità di misura di x
 
 ```python
-# Es: misuro x=45.897 +- 135
+# Es: misuro x=45.890 +- 135
 >>> import texpy as tp
->>> tp.ne(45897,135)
-```
-Output:
-```latex
-$(4.59\pm0.01)\times 10^{4}$
+>>> tp.ne(45890,135)
+'$(4.59 \\pm 0.01) \\times 10^{4}$'
+
+>>> tp.ne(67.5, 1.6, unit="kg") # Il parametro unit imposta l'unità in chili
+'$68 \\pm 2$kg'
+
+>>> tp.ne(65000, 300, "V") # Se l'ordine di grandezza di x risulta multiplo di 3 la funzione
+'$65.0 \\pm 0.3$kV'        # aggiunge automaticamente il prefisso del SI adatto: 65000 V = 65 kV
 ```
 
-### Notazione scientifica di valore con errore
-`nes(x,dx)`
-```python
-# Es: misuro x=45.897 +- 135
->>> tp.nes(45897,135)
-
-#Es: voglio solo il valore di x=45.897
->>> tp.nes(45897)
-```
-Output:
-```latex
-$4.59\\times 10^{4}$', '$0.01\\times 10^{4}$
-
-$4.59\times 10^{4}$
-```
 ### Tabella per latex
-`mat(Matrice,titolo=None,file=None)`
-Stampa su terminale una matrice fatta di stringhe per latex
-- Matrice: matrice fatta di stringhe contenente tutti i valori
+
+`mat(Matrice, titolo=None, file=None)` Stampa su terminale una matrice fatta di stringhe in formato latex
+
+- Matrice: matrice fatta di stringhe contenente i valori da stampare
 - titolo: Opzionale, il titolo della tabella
 - file: Opzionale, file in cui la matrice viene stampata (ATTENZIONE SOVRASCRIVE IL FILE!)
 
 ```python
 # Esempio:
 >>> import texpy as tp
->>> M=[['guardati','l\'attacco'],
-		['dei','giganti']]
->>> tp.mat(M,'titolo & a caso')
+>>> M = [['guardati', 'l\'attacco'],
+        ['dei', 'giganti']]
+>>> tp.mat(M, 'titolo & a caso')
 ```
+
 Output:
+
 ```latex
 Copia tutto quello che c'è tra le linee
  --------------------------
@@ -104,31 +110,60 @@ Copia tutto quello che c'è tra le linee
 --------------------------
 ```
 
-### Notazione scientifica
-`ns(n,nrif=,nult=Null)`  
-Funzione della notazione scientifica di un singolo numero con un numero di riferimento nrif scritto in latex.
-I parametri sono:
-- n: numero da portare in notazione scientifica
-- nrif: Opzionale, serve a dire a che ordine di grandezza deve essere portato il numero, se non specificato assume il valore di n
-- nult: Opzionale, serve a dire quante cifre scrivere dopo la virgola 
+Se avessi scritto `tp.mat(M, 'titolo & a caso', file="myfile.txt")` l'output sopra sarebbe stato scritto nel file `myfile.txt`
+
+### Notazione scientifica con valore ed errore separati
+
+`nes(x, dx=None, unit=None)` Ritorna due stringe, una col valore e l'altro con l'errore fatte in modo che abbiano
+lo stesso ordine di grandezza, in pratica è come la prima funzione ma valore ed errore sono in due stringhe diverse
+
+- x: valore della misura
+- dx: Opzionale, errore della misura
+- unit: Opzionale, serve per impostare l'unità di misura di x
 
 ```python
-# Es: Porto in notazione scientifica 45.897.241
->>> import texpy as tp
->>> tp.ns(45897)
+# Es: misuro x = 45.890 +- 135
+>>> tp.nes(45897,135)
+(array('$4.59 \\times 10^{4}$', dtype='<U20'),
+ array('$0.01 \\times 10^{4}$', dtype='<U20'))
 
-# Es: Porto in notazione scientifica 45.897 con l'ordine di grandezza di 135
->>> tp.ns(45897,135)
+# Es: voglio solo il valore di x = 45.890
+>>> tp.nes(45890)
+array('$4.59 \\times 10^{4}$', dtype='<U20')
 
-#Es:Porto in notazione scientifica 45.897 con l'ordine di grandezza di 135 e
-#scrivo i numeri dopo la virgola fino all'ordine di grandezza di 3 (assicurati che quelle cifre esistano)
->>> tp.ns(45897,135,3)
+>>> tp.ne(6750, 16, unit="g") # Il parametro unit imposta l'unità di misura
+(array('$6.75$kg', dtype='<U8'), array('$0.02$kg', dtype='<U8'))
 ```
-Output:
-```latex
-$4.59\times 10^{7}$
 
-$458\times 10^{2}$
+### Notazione scientifica
 
-$458.97\\times 10^{2}$
+`ns(n, nrif=None, nult=None, unit=None)` Funzione della notazione scientifica di un singolo numero con un numero di riferimento nrif scritto in latex.
+I parametri sono:
+
+- n: numero da portare in notazione scientifica
+- nrif: Opzionale, serve a specificare l'ordine di grandezza del numero prima della virgola, ovvero dove mettere la virgola, se non specificato assume il valore di n
+- nult: Opzionale, serve a specificare l'ordine di grandezza della cifra meno significativa, ovvero serve a dire quante cifre scrivere dopo la virgola  
+- unit: Serve a impostare l'unità di misura di n
+
+Nota: Viene preso l'ordine di grandezza di nrif e nult
+
+```python
+# Es: Porto in notazione scientifica 45.890
+>>> import texpy as tp
+>>> tp.ns(45890)
+'$4.59 \\times 10^{4}$'
+
+# Es: Porto in notazione scientifica 45.890 con l'ordine di grandezza di 135
+>>> tp.ns(45890, 135)
+'$459 \\times 10^{2}$'
+
+# Es: Porto in notazione scientifica 45.890 con l'ordine di grandezza di 135 e
+# scrivo i numeri dopo la virgola fino all'ordine di grandezza di 3
+>>> tp.ns(45890, 135, 3)
+'$459.90 \\times 10^{2}$'
+
+>>> tp.ns(45890, 135, 3, "F") # Il parametro unit imposta l'unità di misura
+'$45890$F'
+>>> tp.ns(45890, 1000, 3, "F") # la funzione automaticamente converte 45.890 * 10^3 F = 45.890 kF  
+'$45.890$kF'
 ```
